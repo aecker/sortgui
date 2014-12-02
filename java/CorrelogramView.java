@@ -27,7 +27,7 @@ public class CorrelogramView implements GLEventListener {
 		padding = 2;
 	}
 	
-	public void setData(float[][][] ccg) {
+	public void setCCG(float[][][] ccg) {
 		this.ccg = ccg.clone();
 		n = ccg.length;
 		bins = n > 0 ? ccg[0][0].length : 0;

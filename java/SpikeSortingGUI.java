@@ -33,7 +33,7 @@ public class SpikeSortingGUI {
         		}
         	}
         }
-        gui.setData(ccg);
+        gui.setCCG(ccg);
         int[] sel = {1, 9};
         gui.setSelected(sel);
     }
