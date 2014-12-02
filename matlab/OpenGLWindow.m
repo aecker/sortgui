@@ -39,14 +39,14 @@ classdef OpenGLWindow < handle
             [varargout{:}] = get(self.fig, varargin{:});
         end
         
-        function resize(self, sz)
+        function resize(self, width, height)
             % Resize figure window.
             
             pos = get(self.fig, 'Position');
-            pos(3) = sz(1);
+            pos(3) = width;
             h = pos(4);
-            pos(2) = pos(2) + h - sz(2);
-            pos(4) = sz(2);
+            pos(2) = pos(2) + h - height;
+            pos(4) = height;
             set(self.fig, 'Position', pos);
         end
     end
