@@ -20,6 +20,8 @@ classdef MCorrelogramView < OpenGLWindow
             %   ccg is of size #bins-by-K-by-K, where K is the number of
             %   neurons.
             
+            ccg = bsxfun(@rdivide, ccg, max(ccg));
+            ccg = permute(ccg, [3 2 1]);
             self.jobj.setCCG(ccg);
             self.repaint();
         end
