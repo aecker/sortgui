@@ -18,7 +18,9 @@ classdef OpenGLWindow < handle
         function delete(self)
             % Destructor for MCorrelogramView.
             
-            close(self.fig)
+            if isvalid(self.fig)
+                close(self.fig)
+            end
         end
         
         function set(self, varargin)
