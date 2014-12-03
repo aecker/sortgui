@@ -1,17 +1,11 @@
-classdef MCorrelogramView < OpenGLWindow
+classdef MCorrelogramView < MView
     % Correlogram view (Matlab interface for Java class CorrelogramView).
-    
-    properties (Access = private)
-        jobj        % CorrelogramView Java object
-    end
     
     methods
         function self = MCorrelogramView()
             % Constructor for MCorrelogramView.
             
-            self = self@OpenGLWindow('Cross-correlograms');
-            self.jobj = CorrelogramView();
-            self.glcanvas.jcomp.addGLEventListener(self.jobj);
+            self = self@MView(CorrelogramView(), 'Cross-correlograms');
         end
         
         function setCCG(self, ccg)
