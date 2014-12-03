@@ -10,7 +10,7 @@ classdef MCorrelogramView < OpenGLWindow
             % Constructor for MCorrelogramView.
             
             self = self@OpenGLWindow('Cross-correlograms');
-            self.jobj = CorrelogramView(self.glcanvas.jcomp);
+            self.jobj = CorrelogramView();
             self.glcanvas.jcomp.addGLEventListener(self.jobj);
         end
         

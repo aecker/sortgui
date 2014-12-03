@@ -10,7 +10,7 @@ classdef MSpikeTimeView < OpenGLWindow
             % Constructor for MSpikeTimeView.
             
             self = self@OpenGLWindow('Spike times and amplitudes');
-            self.jobj = SpikeTimeView(self.glcanvas.jcomp);
+            self.jobj = SpikeTimeView();
             self.glcanvas.jcomp.addGLEventListener(self.jobj);
         end
         
