@@ -28,8 +28,10 @@ classdef MView < OpenGLWindow
             %   self.setColorScheme(colors) sets the color scheme for the
             %   view. colors is an N-by-3 array of colors.
             
-            scheme = MyColorScheme(c);
-            self.jobj.setColorScheme(scheme);
+            if isnumeric(c)
+                c = MyColorScheme(c);
+            end
+            self.jobj.setColorScheme(c);
             self.repaint();
         end
     end
