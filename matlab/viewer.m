@@ -49,23 +49,24 @@ W = repmat(W, [1 1 1 2]);
 
 
 %% open CCG and spike time views
-sel = 5 : 8;
 ccg = correlogram(t, assignments, M, 0.2, 10);
 ccgView = MCorrelogramView;
 ccgView.setCCG(ccg)
-ccgView.setSelected(sel)
 ccgView.resize(600, 400)
 
 spikeView = MSpikeTimeView;
 spikeView.setSpikes(t, ampl, assignments)
-spikeView.setSelected(sel)
 spikeView.resize(600, 400)
 
 waveView = MWaveformView;
 waveView.setChannelLayout(locx, locy)
 waveView.setWaveforms(W)
-waveView.setSelected(sel)
-waveView.setPadding(3)
+waveView.setPadding(4)
 waveView.setSpacing(75)
-waveView.setColorScheme(hsv(10))
+waveView.setColorScheme(HSVColorScheme)
+
+sel = 2:5;
+ccgView.setSelected(sel)
+spikeView.setSelected(sel)
+waveView.setSelected(1:7)
 
