@@ -1,24 +1,17 @@
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
 
 
-public class SpikeTimeView implements GLEventListener {
+public class SpikeTimeView extends View {
 
 	int lists, n;
 	float[][] times, amplitudes;
 	float T;
-	int[] selected;
-	boolean repaint;
-	ColorScheme colors;
 	
 	public SpikeTimeView() {
 		times = new float[0][0];
 		amplitudes = new float[0][0];
-		selected = new int[0];
-		repaint = false;
-		colors = new HSVColorScheme();
 	}
 	
 	public void setNumCells(int n) {
@@ -32,16 +25,6 @@ public class SpikeTimeView implements GLEventListener {
 		this.times[i] = times.clone();
 		this.amplitudes[i] = amplitudes.clone();
 		T = Math.max(T, times[times.length - 1]);
-		repaint = true;
-	}
-	
-	public void setColorScheme(ColorScheme c) {
-		colors = c;
-		repaint = true;
-	}
-	
-	public void setSelected(int[] selected) {
-		this.selected = selected.clone();
 		repaint = true;
 	}
 

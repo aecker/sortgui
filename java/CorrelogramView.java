@@ -1,26 +1,19 @@
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GL2;
 
 
-public class CorrelogramView implements GLEventListener {
+public class CorrelogramView extends View {
 
 	int lists;
 	int n, bins; 
 	float[][][] ccg;
-	int[] selected;
-	boolean repaint;
-	ColorScheme colors;
 	int padding;
 	
 	public CorrelogramView() {
 		ccg = new float[0][0][0];
 		n = 0;
 		bins = 0;
-		selected = new int[0];
-		repaint = false;
-		colors = new HSVColorScheme();
 		padding = 2;
 	}
 	
@@ -29,15 +22,6 @@ public class CorrelogramView implements GLEventListener {
 		n = ccg.length;
 		bins = n > 0 ? ccg[0][0].length : 0;
 		repaint = true;
-	}
-	
-	public void setColorScheme(ColorScheme c) {
-		colors = c;
-		repaint = true;
-	}
-	
-	public void setSelected(int[] selected) {
-		this.selected = selected.clone();
 	}
 	
 	@Override
