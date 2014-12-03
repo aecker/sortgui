@@ -2,12 +2,10 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
 
 
 public class CorrelogramView implements GLEventListener {
 
-	GLCanvas glcanvas;
 	int lists;
 	int n, bins; 
 	float[][][] ccg;
@@ -16,8 +14,7 @@ public class CorrelogramView implements GLEventListener {
 	ColorScheme colors;
 	int padding;
 	
-	public CorrelogramView(GLCanvas glcanvas) {
-		this.glcanvas = glcanvas;
+	public CorrelogramView() {
 		ccg = new float[0][0][0];
 		n = 0;
 		bins = 0;

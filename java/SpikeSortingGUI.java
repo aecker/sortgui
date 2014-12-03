@@ -14,12 +14,12 @@ public class SpikeSortingGUI {
         frame.setLayout(new GridLayout());
         
         GLCanvas canvas = new GLCanvas();
-        CorrelogramView ccgView = new CorrelogramView(canvas);
+        CorrelogramView ccgView = new CorrelogramView();
         canvas.addGLEventListener(ccgView);
         frame.add(canvas);
         
         canvas = new GLCanvas();
-        SpikeTimeView spikeView = new SpikeTimeView(canvas);
+        SpikeTimeView spikeView = new SpikeTimeView();
         canvas.addGLEventListener(spikeView);
         frame.add(canvas);
         
