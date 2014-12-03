@@ -23,6 +23,11 @@ public class SpikeSortingGUI {
         canvas.addGLEventListener(spikeView);
         frame.add(canvas);
         
+        canvas = new GLCanvas();
+        WaveformView waveView = new WaveformView ();
+        canvas.addGLEventListener(waveView);
+        frame.add(canvas);
+        
         frame.setSize(500, 300);
         frame.setVisible(true);
         frame.addWindowListener(new WindowAdapter() {
@@ -44,7 +49,7 @@ public class SpikeSortingGUI {
         	}
         }
         ccgView.setCCG(ccg);
-        int[] sel = {1, 9};
+        int[] sel = {2, 3, 4};
         ccgView.setSelected(sel);
         
         // show some random spike times
@@ -63,5 +68,33 @@ public class SpikeSortingGUI {
             spikeView.setSpikes(i, times, amplitudes);
         }
         spikeView.setSelected(sel);
+        
+        // show some random waveforms
+        float[] spike = {0, 10, 18, 10, -25, -60, -35, -11, 0, 7, 10, 12, 13, 13, 12, 10, 7, 3, 1, 0};
+        int D = spike.length;
+        int K = 12;
+        float[] locx = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+        float[] locy = {0, 0.5f, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5, 5.5f};
+        float[][][][] waveforms = new float[M][K][1][D];
+        int[] peaks = new int[M];
+        float a, px, py = 1, sdx, sdy, dx, dy;
+        for (int i = 0; i != M; ++i) {
+        	px = rand.nextFloat();
+        	py += rand.nextFloat() * 0.8;
+        	peaks[i] = Math.round(2 * py);
+        	sdx = 0.2f + rand.nextFloat() * 0.3f;
+        	sdy = 1 + (float) (rand.nextGaussian() * 0.2);
+        	for (int j = 0; j != K; ++j) {
+        		dx = (locx[j] - px) / sdx;
+        		dy = (locy[j] - py) / sdy;
+                a = (float) Math.exp(-0.5 * (dx * dx + dy * dy));
+                for (int k = 0; k != D; ++k) {
+        			waveforms[i][j][0][k] = a * spike[k];
+        		}
+        	}
+        }
+        waveView.setChannelLayout(locx, locy);
+        waveView.setWaveforms(waveforms, peaks);
+        waveView.setSelected(sel);
     }
 }
