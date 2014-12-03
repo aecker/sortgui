@@ -21,7 +21,7 @@ classdef MWaveformView < MView
             ampl = permute(ampl, [2 3 1]);
             [~, peaks] = max(ampl);
             waveforms = permute(waveforms, [3 2 4 1]);
-            self.jobj.setWaveforms(waveforms, peaks);
+            self.jobj.setWaveforms(waveforms, peaks - 1);
             self.repaint();
         end
         
