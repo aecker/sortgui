@@ -18,7 +18,7 @@ public class CorrelogramView extends View {
 	}
 	
 	public void setCCG(float[][][] ccg) {
-		this.ccg = ccg.clone();
+		this.ccg = ccg;
 		n = ccg.length;
 		bins = n > 0 ? ccg[0][0].length : 0;
 		repaint = true;

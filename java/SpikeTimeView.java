@@ -22,8 +22,8 @@ public class SpikeTimeView extends View {
 	}
 	
 	public void setSpikes(int i, float[] times, float[] amplitudes) {
-		this.times[i] = times.clone();
-		this.amplitudes[i] = amplitudes.clone();
+		this.times[i] = times;
+		this.amplitudes[i] = amplitudes;
 		T = Math.max(T, times[times.length - 1]);
 		repaint = true;
 	}
