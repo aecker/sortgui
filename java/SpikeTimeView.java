@@ -5,7 +5,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 public class SpikeTimeView extends View {
 
-	int lists, n;
+	int n;
 	float[][] times, amplitudes;
 	float T;
 	
@@ -29,37 +29,32 @@ public class SpikeTimeView extends View {
 	}
 
 	@Override
-	public void display(GLAutoDrawable glautodrawable) {
-		
-		GL2 gl = glautodrawable.getGL().getGL2();
+	public DisplayLists genLists(GL2 gl) {
 
-		if (repaint) {
-			// remove existing display lists (if any)
-			if (gl.glIsList(lists)) {
-				gl.glDeleteLists(lists, n);
+		n = times.length;
+		DisplayLists lists = new DisplayLists(gl, n);
+		for (int i = 0; i != n; ++i) {
+			lists.newList(i);
+			gl.glPushMatrix();
+			float[] c = colors.getColor(i);
+			gl.glColor3f(c[0], c[1], c[2]);
+			gl.glBegin(GL2.GL_POINTS);
+			float[] t = times[i], a = amplitudes[i];
+			for (int j = 0; j != t.length; ++j) {
+				gl.glVertex2f(t[j], a[j] - 1);
 			}
-
-			// create display lists
-			n = times.length;
-			lists = gl.glGenLists(n);
-			for (int i = 0; i != n; ++i) {
-				gl.glNewList(lists + i, GL2.GL_COMPILE);
-				gl.glPushMatrix();
-				float[] c = colors.getColor(i);
-				gl.glColor3f(c[0], c[1], c[2]);
-				gl.glBegin(GL2.GL_POINTS);
-				float[] t = times[i], a = amplitudes[i];
-				for (int j = 0; j != t.length; ++j) {
-					gl.glVertex2f(t[j], a[j] - 1);
-				}
-				gl.glEnd();
-				gl.glPopMatrix();
-				gl.glEndList();
-			}
-			repaint = false;
+			gl.glEnd();
+			gl.glPopMatrix();
+			gl.glEndList();
 		}
+		return lists;
+	}
+		
+	@Override
+	protected void draw(GLAutoDrawable glautodrawable) {
 
 		// clear background & set coordinate system
+		GL2 gl = glautodrawable.getGL().getGL2();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
@@ -70,29 +65,8 @@ public class SpikeTimeView extends View {
 		gl.glTranslatef(0, selected.length, 0);
 		for (int i = 0; i != selected.length; ++i) {
 			gl.glTranslatef(0, -1, 0);
-			gl.glCallList(lists + selected[i]);
+			callList(selected[i]);
         }
-	}
-
-	@Override
-	public void dispose(GLAutoDrawable glautodrawable) {
-		// delete display lists
-		GL2 gl = glautodrawable.getGL().getGL2();
-        if (gl.glIsList(lists)) {
-			gl.glDeleteLists(lists, n);
-		}		
-	}
-
-	@Override
-	public void init(GLAutoDrawable glautodrawable) {
-	}
-
-	@Override
-	public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
-		GL2 gl = glautodrawable.getGL().getGL2();
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glViewport(0, 0, width, height);
 	}
 
 }
