@@ -31,15 +31,15 @@ public class SpikeSortingGUI {
             }
         });
         
-        // show some data
-        int m = 10, n = 21;
+        // show some data for CCGs
+        int M = 10, N = 21;
         Random rand = new Random();
-        float[][][] ccg = new float[m][m][n];
-        for (int i = 0; i != m; ++i) {
-        	for (int j = i; j != m; ++j) {
-        		for (int k = 0; k != n; ++k) {
+        float[][][] ccg = new float[M][M][N];
+        for (int i = 0; i != M; ++i) {
+        	for (int j = i; j != M; ++j) {
+        		for (int k = 0; k != N; ++k) {
         			ccg[i][j][k] = rand.nextFloat();
-        			ccg[j][i][n - k - 1] = ccg[i][j][k]; 
+        			ccg[j][i][N - k - 1] = ccg[i][j][k]; 
         		}
         	}
         }
@@ -47,15 +47,16 @@ public class SpikeSortingGUI {
         int[] sel = {1, 9};
         ccgView.setSelected(sel);
         
-        m = 10;
-        n = 10000;
-        spikeView.setNumCells(m);
-        for (int i = 0; i != m; ++i) {
-        	float[] times = new float[n];
-            float[] amplitudes = new float[n];
+        // show some random spike times
+        M = 10;
+        N = 10000;
+        spikeView.setNumCells(M);
+        for (int i = 0; i != M; ++i) {
+        	float[] times = new float[N];
+            float[] amplitudes = new float[N];
             times[0] = rand.nextFloat();
         	amplitudes[0] = (float) (1 + rand.nextGaussian() / 20.0);
-        	for (int j = 1; j != n; ++j) {
+        	for (int j = 1; j != N; ++j) {
         		times[j] = times[j - 1] - (float) Math.log(1 - rand.nextDouble());
             	amplitudes[j] = (float) (1 + rand.nextGaussian() / 20.0);
         	}
