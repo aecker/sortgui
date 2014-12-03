@@ -57,8 +57,9 @@ public class WaveformView extends View {
 				float[] c = colors.getColor(i);
 				gl.glPushMatrix();
 				gl.glScalef(1 / (float) samples, 1, 1);
-				gl.glColor3f(c[0], c[1], c[2]);
 				for (int k = 0; k != blocks; ++k) {
+					float a = (float) (k + 1) / (float) blocks;
+					gl.glColor3f(a * c[0], a * c[1], a * c[2]);
 					gl.glBegin(GL2.GL_LINE_STRIP);
 					float[] w = waveforms[i][j][k];
 					for (int l = 0; l != samples; ++l) {
