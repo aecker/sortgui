@@ -1,6 +1,7 @@
 % Test script
 
 %% reload Java classes
+close all
 clear ccgView spikeView waveView
 javaaddpath(fullfile(pwd, 'bin'))
 
@@ -73,5 +74,5 @@ waveView.setColorScheme(HSVColorScheme)
 sel = 2:5;
 ccgView.setSelected(sel)
 spikeView.setSelected(sel)
-waveView.setSelected(1:7)
+waveView.setSelected(sel)
 
