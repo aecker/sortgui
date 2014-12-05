@@ -6,12 +6,11 @@ classdef MView < OpenGLWindow
     end
     
     methods
-        function self = MView(jobj, title)
+        function self = MView(jobj, title, varargin)
             % Constructor for MView.
             
-            self = self@OpenGLWindow(title);
+            self = self@OpenGLWindow(jobj, title, varargin{:});
             self.jobj = jobj;
-            self.glcanvas.jcomp.addGLEventListener(self.jobj);
         end
         
         function setSelected(self, sel)
