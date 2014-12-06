@@ -54,25 +54,6 @@ drift = permute(drift, [3 4 1 2]);
 W = bsxfun(@times, W, drift);
 
 
-%% open CCG and spike time views
-ccg = correlogram(t, assignments, M, 0.2, 10);
-ccgView = MCorrelogramView;
-ccgView.setCCG(ccg)
-ccgView.resize(600, 400)
-
-spikeView = MSpikeTimeView;
-spikeView.setSpikes(t, ampl, assignments)
-spikeView.resize(600, 400)
-
-waveView = MWaveformView;
-waveView.setChannelLayout(locx, locy)
-waveView.setWaveforms(W)
-waveView.setPadding(4)
-waveView.setSpacing(75)
-waveView.setColorScheme(HSVColorScheme)
-
-sel = 2:5;
-ccgView.setSelected(sel)
-spikeView.setSelected(sel)
-waveView.setSelected(sel)
-
+%% open GUI
+channelLayout = [locx; locy]';
+gui = SortGUI(t, assignments, ampl, W, channelLayout);
