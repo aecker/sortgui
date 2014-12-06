@@ -1,11 +1,5 @@
 % Test script
 
-%% reload Java classes
-close all
-clear ccgView spikeView waveView
-javaaddpath(fullfile(pwd, 'bin'))
-
-
 %% generate some toy data
 rng(1);
 T = 10 * 60;
@@ -52,6 +46,12 @@ B = 8;
 drift = exp(randn(M, 1) * 0.4 * linspace(-1, 1, B));
 drift = permute(drift, [3 4 1 2]);
 W = bsxfun(@times, W, drift);
+
+
+%% reload Java classes
+close all
+clear gui
+javaaddpath(fullfile(pwd, 'bin'))
 
 
 %% open GUI
