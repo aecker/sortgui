@@ -87,7 +87,9 @@ classdef SortGUI < handle
             % set selection
             sel = 1 : min(8, M);
             self.selection.Callback = @(src, ~) self.setSelected(src.Value);
-            self.setSelected(sel);
+            addlistener(self.selection, 'Value', 'PostSet', ...
+                @(~, evt) self.setSelected(evt.AffectedObject.Value));
+            self.selection.Value = sel;
             
             self.fig.KeyPressFcn = @(~, evt) self.handleKeyboard(evt);
             self.up.KeyPressFcn = @(~, evt) self.handleKeyboard(evt);
@@ -113,7 +115,7 @@ classdef SortGUI < handle
                 return
             end
             ignore = setdiff(s : e, sel);
-            self.setSelected(setdiff(s + i : e + i, ignore));
+            self.selection.Value = setdiff(s + i : e + i, ignore);
         end
         
         function expandSel(self, i)
@@ -125,16 +127,13 @@ classdef SortGUI < handle
                 if s - i < 1
                     return
                 end
-                self.setSelected(setdiff(s - i : e, ignore));
+                self.selection.Value = setdiff(s - i : e, ignore);
             else
-                self.setSelected(setdiff(s : e + i, ignore));
+                self.selection.Value = setdiff(s : e + i, ignore);
             end
         end
         
         function setSelected(self, sel)
-            if ~isequal(self.selection.Value, sel)
-                self.selection.Value = sel;
-            end
             self.ccgView.setSelected(sel);
             self.spikeView.setSelected(sel);
             self.waveView.setSelected(sel);
