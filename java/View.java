@@ -21,8 +21,8 @@ public abstract class View implements GLEventListener {
 		repaint = true;
 	}
 	
-	public void setSelected(int[] selected) {
-		this.selected = selected;
+	public void setSelected(int[] sel) {
+		selected = (sel == null) ? new int[0] : sel;
 	}
 	
 	protected void repaint() {

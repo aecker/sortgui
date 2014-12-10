@@ -141,7 +141,7 @@ classdef SortGUI < handle
                 first = 1;
             end
             self.selFirst = min(self.M, max(1, first));
-            self.selLast = min(self.M, max(1, last));
+            self.selLast = min(self.M, max(self.selFirst, last));
             indices = (self.selFirst : self.selLast)';
             
             % update stats table
