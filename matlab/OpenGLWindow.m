@@ -61,6 +61,12 @@ classdef OpenGLWindow < handle
             self.hdl.JavaComponent.repaint();
         end
         
+        function delete(self)
+            if ishghandle(self.fig)
+                close(self.fig)
+            end
+        end
+        
     end
     
     

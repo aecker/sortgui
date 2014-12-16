@@ -198,6 +198,12 @@ classdef SortGUI < handle
             end
         end
         
+        function close(self)
+            delete(self.ccgView)
+            delete(self.spikeView)
+            delete(self.waveView)
+        end
+        
     end
 end
 
