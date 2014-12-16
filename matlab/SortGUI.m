@@ -3,12 +3,15 @@ classdef SortGUI < handle
     properties %#ok<*PROP>
         fig
         table
+        tableSel
         selection
         upBtn
         downBtn
         moreBtn
         lessBtn
         doneBtn
+        groupBtn
+        ungroupBtn
         colorScheme
         ccgView
         spikeView
@@ -19,12 +22,14 @@ classdef SortGUI < handle
         rate
         selFirst
         selLast
-        M
+        numTemplates
+        numGroups
         t
         assignments
         ampl
         W
         channelLayout
+        ccg
     end
     
     properties (Access = private, Constant)
@@ -64,12 +69,13 @@ classdef SortGUI < handle
             self.ampl = ampl;
             self.W = W;
             self.channelLayout = channelLayout;
-            self.M = max(assignments);
-            self.groupings = num2cell(1 : self.M);
+            self.numTemplates = max(assignments);
+            self.groupings = num2cell(1 : self.numTemplates)';
+            self.numGroups = numel(self.groupings);
             
             % GUI main window
             height = 400;
-            width = 270;
+            width = 300;
             pos = getenv('SORTGUI_POSITION');
             if isempty(pos)
                 left = 50;
@@ -87,20 +93,21 @@ classdef SortGUI < handle
             % cluster list
             s = self.spacing;
             h = height - 2 * s;
-            w = 200;
+            w = 220;
             pos = [s, height - h - s, w, h];
             
             self.table = uitable('Data', {}, 'RowName', [], ...
-                'ColumnName', {'Color', 'SU', 'Rate', 'Ignore'}, ...
-                'ColumnWidth', {40 20 40 40}, ...
-                'ColumnEditable', [false, true, false, true], ...
+                'ColumnName', {'Color', 'SU', 'Rate', 'Ignore', '#'}, ...
+                'ColumnWidth', {40 20 40 40 20}, ...
+                'ColumnEditable', [false, true, false, true, false], ...
                 'BackgroundColor', [1 1 1], ...
                 'Position', pos, 'FontSize', 12, ...
-                'CellEditCallback', @(src, evt) self.tableEdit(evt));
+                'CellEditCallback', @(~, evt) self.tableEdit(evt), ...
+                'CellSelectionCallback', @(~, evt) self.tableSelect(evt));
             
             % buttons for moving the list
             h = self.btnHeight;
-            wi = 40;
+            wi = 50;
             pos = [2 * s + w, height - s - h, wi, h];
             self.upBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '//\\', 'Callback', @(~, ~) self.moveSel(-1));
@@ -115,6 +122,14 @@ classdef SortGUI < handle
             pos(2) = pos(2) - h;
             self.moreBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '+', 'Callback', @(~, ~) self.expandSel(1));
+
+            % (un)group buttons
+            pos(2) = pos(2) - s - h;
+            self.groupBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+                'String', 'group', 'Callback', @(~, ~) self.group());
+            pos(2) = pos(2) - h;
+            self.ungroupBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+                'String', 'ungroup', 'Callback', @(~, ~) self.ungroup());
             
             % done button
             pos = [2 * s + w, s, wi, h];
@@ -122,9 +137,9 @@ classdef SortGUI < handle
                 'String', 'OK', 'Callback', @(~, ~) uiresume(self.fig));
             
             % cross-correlograms
-            ccg = correlogram(t, assignments, self.M, 0.2, 10);
+            self.ccg = correlogram(t, assignments, self.numTemplates, 0.2, 10);
             self.ccgView = MCorrelogramView;
-            self.ccgView.setCCG(ccg)
+            self.ccgView.setCCG(self.ccg)
             w = 1200;
             height = 800;
             set(self.ccgView, 'Position', [left + width, top - height, w, height]);
@@ -142,9 +157,9 @@ classdef SortGUI < handle
             set(self.spikeView, 'Position', [left + width + w, top - height, round(w / 3), height]);
             
             % statistics etc
-            self.rate = histc(assignments, 1 : self.M) / (t(end) - t(1)) * 1000;
-            self.singleUnits = false(self.M, 1);
-            self.ignore = false(self.M, 1);
+            self.rate = histc(assignments, 1 : self.numTemplates) / (t(end) - t(1)) * 1000;
+            self.singleUnits = false(self.numGroups, 1);
+            self.ignore = false(self.numGroups, 1);
             self.setSelection(1, 15);
             
             set(self.fig, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
@@ -175,31 +190,68 @@ classdef SortGUI < handle
         function setSelection(self, first, last)
             
             % determine units to be selected
-            if last > self.M
-                first = first - last + self.M;
-                last = self.M;
+            if last > self.numGroups
+                first = first - last + self.numGroups;
+                last = self.numGroups;
             end
             if first < 1
                 last = last + 1 - first;
                 first = 1;
             end
-            self.selFirst = min(self.M, max(1, first));
-            self.selLast = min(self.M, max(self.selFirst, last));
+            self.selFirst = min(self.numGroups, max(1, first));
+            self.selLast = min(self.numGroups, max(self.selFirst, last));
             indices = (self.selFirst : self.selLast)';
             
             % update stats table
-            colors = arrayfun(@(k) colorPatch(self.colorScheme.getColor(k - 1)), indices, 'uni', false);
-            [colors{self.ignore(indices)}] = deal('');
-            self.table.RowName = num2cell(indices);
-            self.table.Data = [colors, num2cell(self.singleUnits(indices)), ...
-                arrayfun(@(x) sprintf('<html><p align="right" width=35">%.1f</p></html>', x), self.rate(indices), 'uni', false), ...
-                num2cell(self.ignore(indices))];
+            d = cell(numel(indices), 5);
+            for i = 1 : numel(indices)
+                d{i, 1} = colorPatch(self.colorScheme.getColor(indices(i) - 1));
+                d{i, 2} = self.singleUnits(indices(i));
+                d{i, 3} = sprintf('<html><p align="right" width=35">%.1f</p></html>', sum(self.rate(self.groupings{indices(i)})));
+                d{i, 4} = self.ignore(indices(i));
+                d{i, 5} = groupStr(numel(self.groupings{indices(i)}));
+            end
+            self.table.Data = d;
             
             % update views
             sel = indices(~self.ignore(indices));
             self.ccgView.setSelected(sel);
             self.spikeView.setSelected(sel);
             self.waveView.setSelected(sel);
+        end
+        
+        
+        function group(self)
+            indices = self.selFirst : self.selLast;
+            sel = indices(self.tableSel);
+            if ~isempty(sel)
+                self.groupings{sel(1)} = sort([self.groupings{sel}]);
+                self.groupings(sel(2 : end)) = [];
+                self.numGroups = numel(self.groupings);
+                self.singleUnits(sel(1)) = true; % grouping implies single unit
+                self.singleUnits(sel(2 : end)) = [];
+                self.setSelection(self.selFirst, self.selLast);
+                self.updatePlots()
+            end
+        end
+        
+        
+        function ungroup(self)
+            indices = self.selFirst : self.selLast;
+            sel = sort(indices(self.tableSel), 'descend');
+            for i = 1 : numel(sel)
+                templates = self.groupings{sel(i)};
+                n = numel(templates);
+                if n > 1
+                    self.groupings(sel(i) + n : end + n - 1) = self.groupings(sel(i) + 1 : end);
+                    self.groupings(sel(i) : sel(i) + n - 1) = num2cell(templates);
+                    self.numGroups = numel(self.groupings);
+                    self.singleUnits(sel(i) + n : end + n - 1) = self.singleUnits(sel(i) + 1 : end);
+                    self.singleUnits(sel(i) : sel(i) + n - 1) = false;
+                    self.setSelection(self.selFirst, self.selLast);
+                end
+            end
+            self.updatePlots()
         end
         
         
@@ -212,6 +264,51 @@ classdef SortGUI < handle
                     self.ignore(indices(evt.Indices(1))) = evt.NewData;
             end
             self.setSelection(self.selFirst, self.selLast);
+        end
+        
+        
+        function tableSelect(self, evt)
+            self.tableSel = unique(evt.Indices(:, 1));
+        end
+        
+        
+        function updatePlots(self)
+            self.updateCCGs()
+            self.updateWaveforms()
+            self.updateSpikeTimes()
+        end
+        
+        
+        function updateCCGs(self)
+            bins = size(self.ccg, 1);
+            ccg = zeros(bins, self.numGroups, self.numGroups);
+            for i = 1 : self.numGroups
+                for j = 1 : self.numGroups
+                    ccg(:, i, j) = sum(sum(self.ccg(:, self.groupings{i}, self.groupings{j}), 2), 3);
+                end
+            end
+            self.ccgView.setCCG(ccg)
+        end
+        
+        
+        function updateWaveforms(self)
+            [D, K, ~, B] = size(self.W);
+            W = zeros(D, K, self.numGroups, B);
+            for i = 1 : self.numGroups
+                idx = self.groupings{i};
+                W(:, :, i, :) = sum(bsxfun(@times, self.W(:, :, idx, :), permute(self.rate(idx), [2 3 1])), 3) / sum(self.rate(idx));
+            end
+            self.waveView.setWaveforms(W);
+        end
+        
+        
+        function updateSpikeTimes(self)
+            a = zeros(size(self.assignments));
+            for i = 1 : self.numGroups
+                idx = ismember(self.assignments, self.groupings{i});
+                a(idx) = i;
+            end
+            self.spikeView.setSpikes(self.t, self.ampl, a);
         end
         
         
@@ -255,6 +352,8 @@ classdef SortGUI < handle
             self.downBtn.Position(2) = self.upBtn.Position(2) - h;
             self.lessBtn.Position(2) = self.downBtn.Position(2) - s - h;
             self.moreBtn.Position(2) = self.lessBtn.Position(2) - h;
+            self.groupBtn.Position(2) = self.moreBtn.Position(2) - s - h;
+            self.ungroupBtn.Position(2) = self.groupBtn.Position(2) - h;
             self.table.Position(4) = height - 2 * s;
         end
         
@@ -274,4 +373,14 @@ function html = colorPatch(color)
     html = sprintf('<html><div style="background: #%s%s%s; width: 25px; height: 8px"></div></html>', ...
         dec2hex(color(1), 2), dec2hex(color(2), 2), dec2hex(color(3), 2));
 end
+
+
+function str = groupStr(n)
+    if n > 1
+        str = num2str(n);
+    else
+        str = '';
+    end
+end
+    
 
