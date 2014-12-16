@@ -167,6 +167,9 @@ classdef SortGUI < handle
             set(self.downBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.lessBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.moreBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.groupBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.ungroupBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.doneBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.table, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.ccgView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.waveView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
