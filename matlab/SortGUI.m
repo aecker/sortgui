@@ -161,13 +161,16 @@ classdef SortGUI < handle
                           'ResizeFcn', @(~, ~) self.resize())
         end
         
+        
         function moveSel(self, i)
             self.setSelection(self.selFirst + i, self.selLast + i);
         end
         
+        
         function expandSel(self, i)
             self.setSelection(self.selFirst, self.selLast + i);
         end
+        
         
         function setSelection(self, first, last)
             
@@ -199,6 +202,7 @@ classdef SortGUI < handle
             self.waveView.setSelected(sel);
         end
         
+        
         function tableEdit(self, ~, evt)
             indices = self.selFirst : self.selLast;
             switch evt.Indices(2)
@@ -209,6 +213,7 @@ classdef SortGUI < handle
             end
             self.setSelection(self.selFirst, self.selLast);
         end
+        
         
         function handleKeyboard(self, evt)
             switch evt.Key
@@ -241,6 +246,7 @@ classdef SortGUI < handle
             end
         end
         
+        
         function resize(self)
             height = self.fig.Position(4);
             h = self.btnHeight;
@@ -251,6 +257,7 @@ classdef SortGUI < handle
             self.more.Position(2) = height - 2 * s - 4 * h;
             self.table.Position(4) = height - 2 * s;
         end
+        
         
         function close(self)
             delete(self.ccgView)
