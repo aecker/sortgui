@@ -59,7 +59,7 @@ classdef SortGUI < handle
     end
 
     
-    methods (Access = private)
+    methods
         
         function self = SortGUI(t, assignments, ampl, W, channelLayout)
             
@@ -176,6 +176,10 @@ classdef SortGUI < handle
                           'ResizeFcn', @(~, ~) self.resize())
         end
         
+    end
+    
+    
+    methods (Access = private)
         
         function moveSel(self, i)
             self.setSelection(self.selFirst + i, self.selLast + i);
