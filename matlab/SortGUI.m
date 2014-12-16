@@ -32,7 +32,28 @@ classdef SortGUI < handle
     end
     
     
-    methods
+    methods (Static)
+        
+        function su = open(t, assignments, ampl, W, channelLayout)
+            % Open GUI window
+            
+            % open GUI window and block command window
+            gui = SortGUI(t, assignments, ampl, W, channelLayout);
+            uiwait(gui.fig);
+            
+            % close all windows
+            if ishghandle(gui.fig)
+                close(gui.fig)
+            end
+            
+            % return single units
+            su = gui.singleUnits;
+        end
+        
+    end
+
+    
+    methods (Access = private)
         
         function self = SortGUI(t, assignments, ampl, W, channelLayout)
             
@@ -129,12 +150,10 @@ classdef SortGUI < handle
             set(self.ccgView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.waveView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.spikeView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            
+            set(self.fig, 'DeleteFcn', @(~, ~) self.close(), ...
+                          'ResizeFcn', @(~, ~) self.resize())
         end
-        
-    end
-    
-    
-    methods (Access = private)
         
         function moveSel(self, i)
             self.setSelection(self.selFirst + i, self.selLast + i);
@@ -214,6 +233,17 @@ classdef SortGUI < handle
                     disp ' 0-9   | select N clusters (0: select 10)'
                     disp ' '
             end
+        end
+        
+        function resize(self)
+            height = self.fig.Position(4);
+            h = self.btnHeight;
+            s = self.spacing;
+            self.up.Position(2) = height - s - h;
+            self.down.Position(2) = height - s - 2 * h;
+            self.less.Position(2) = height - 2 * s - 3 * h;
+            self.more.Position(2) = height - 2 * s - 4 * h;
+            self.table.Position(4) = height - 2 * s;
         end
         
         function close(self)
