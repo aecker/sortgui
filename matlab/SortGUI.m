@@ -181,6 +181,9 @@ classdef SortGUI < handle
                     self.moveSel(-1);
                 case 'rightarrow'
                     self.moveSel(1);
+            end
+            
+            switch evt.Character
                 case {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
                     k = str2double(evt.Key);
                     k = k + 10 * (k == 0);
