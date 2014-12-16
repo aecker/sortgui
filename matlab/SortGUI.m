@@ -1,6 +1,6 @@
 classdef SortGUI < handle
     
-    properties
+    properties %#ok<*PROP>
         fig
         table
         selection
