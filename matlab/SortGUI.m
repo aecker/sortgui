@@ -13,11 +13,17 @@ classdef SortGUI < handle
         spikeView
         waveView
         singleUnits
+        groupings
         ignore
         rate
         selFirst
         selLast
         M
+        t
+        assignments
+        ampl
+        W
+        channelLayout
     end
     
     properties (Access = private, Constant)
@@ -29,6 +35,15 @@ classdef SortGUI < handle
     methods
         
         function self = SortGUI(t, assignments, ampl, W, channelLayout)
+            
+            % data
+            self.t = t;
+            self.assignments = assignments;
+            self.ampl = ampl;
+            self.W = W;
+            self.channelLayout = channelLayout;
+            self.M = max(assignments);
+            self.groupings = num2cell(1 : self.M);
             
             % GUI main window
             height = 400;
@@ -48,7 +63,6 @@ classdef SortGUI < handle
             self.colorScheme = HSVColorScheme;
             
             % cluster list
-            self.M = max(assignments);
             s = self.spacing;
             h = height - 2 * s;
             w = 200;
