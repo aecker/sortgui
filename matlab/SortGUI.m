@@ -12,6 +12,7 @@ classdef SortGUI < handle
         ccgView
         spikeView
         waveView
+        done
         singleUnits
         groupings
         ignore
@@ -114,6 +115,11 @@ classdef SortGUI < handle
             pos = [2 * s + w, height - 2 * s - 4 * h, wi, h];
             self.more = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '+', 'Callback', @(~, ~) self.expandSel(1));
+            
+            % done button
+            pos = [2 * s + w, s, wi, h];
+            self.done = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+                'String', 'OK', 'Callback', @(~, ~) uiresume(self.fig));
             
             % cross-correlograms
             ccg = correlogram(t, assignments, self.M, 0.2, 10);
