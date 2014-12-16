@@ -219,6 +219,7 @@ classdef SortGUI < handle
                 d{i, 5} = groupStr(numel(self.groupings{indices(i)}));
             end
             self.table.Data = d;
+            self.table.RowName = num2cell(indices);
             
             % update views
             sel = indices(~self.ignore(indices));
