@@ -4,15 +4,15 @@ classdef SortGUI < handle
         fig
         table
         selection
-        up
-        down
-        more
-        less
+        upBtn
+        downBtn
+        moreBtn
+        lessBtn
+        doneBtn
         colorScheme
         ccgView
         spikeView
         waveView
-        done
         singleUnits
         groupings
         ignore
@@ -102,23 +102,23 @@ classdef SortGUI < handle
             h = self.btnHeight;
             wi = 40;
             pos = [2 * s + w, height - s - h, wi, h];
-            self.up = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+            self.upBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '//\\', 'Callback', @(~, ~) self.moveSel(-1));
-            pos = [2 * s + w, height - s - 2 * h, wi, h];
-            self.down = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+            pos(2) = pos(2) - h;
+            self.downBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '\\//', 'Callback', @(~, ~) self.moveSel(1));
             
             % buttons for selecting more or less clusters
-            pos = [2 * s + w, height - 2 * s - 3 * h, wi, h];
-            self.less = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+            pos(2) = pos(2) - s - h;
+            self.lessBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '-', 'Callback', @(~, ~) self.expandSel(-1));
-            pos = [2 * s + w, height - 2 * s - 4 * h, wi, h];
-            self.more = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+            pos(2) = pos(2) - h;
+            self.moreBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'FontSize', 14, 'String', '+', 'Callback', @(~, ~) self.expandSel(1));
             
             % done button
             pos = [2 * s + w, s, wi, h];
-            self.done = uicontrol('Style', 'pushbutton', 'Position', pos, ...
+            self.doneBtn = uicontrol('Style', 'pushbutton', 'Position', pos, ...
                 'String', 'OK', 'Callback', @(~, ~) uiresume(self.fig));
             
             % cross-correlograms
@@ -148,10 +148,10 @@ classdef SortGUI < handle
             self.setSelection(1, 15);
             
             set(self.fig, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
-            set(self.up, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
-            set(self.down, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
-            set(self.less, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
-            set(self.more, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.upBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.downBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.lessBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            set(self.moreBtn, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.table, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.ccgView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.waveView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
@@ -251,10 +251,10 @@ classdef SortGUI < handle
             height = self.fig.Position(4);
             h = self.btnHeight;
             s = self.spacing;
-            self.up.Position(2) = height - s - h;
-            self.down.Position(2) = height - s - 2 * h;
-            self.less.Position(2) = height - 2 * s - 3 * h;
-            self.more.Position(2) = height - 2 * s - 4 * h;
+            self.upBtn.Position(2) = height - s - h;
+            self.downBtn.Position(2) = self.upBtn.Position(2) - h;
+            self.lessBtn.Position(2) = self.downBtn.Position(2) - s - h;
+            self.moreBtn.Position(2) = self.lessBtn.Position(2) - h;
             self.table.Position(4) = height - 2 * s;
         end
         
