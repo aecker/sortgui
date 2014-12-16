@@ -96,7 +96,7 @@ classdef SortGUI < handle
                 'ColumnEditable', [false, true, false, true], ...
                 'BackgroundColor', [1 1 1], ...
                 'Position', pos, 'FontSize', 12, ...
-                'CellEditCallback', @(src, evt) self.tableEdit(src, evt));
+                'CellEditCallback', @(src, evt) self.tableEdit(evt));
             
             % buttons for moving the list
             h = self.btnHeight;
@@ -203,7 +203,7 @@ classdef SortGUI < handle
         end
         
         
-        function tableEdit(self, ~, evt)
+        function tableEdit(self, evt)
             indices = self.selFirst : self.selLast;
             switch evt.Indices(2)
                 case 2
