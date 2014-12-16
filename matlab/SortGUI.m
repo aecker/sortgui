@@ -12,7 +12,7 @@ classdef SortGUI < handle
         ccgView
         spikeView
         waveView
-        su
+        singleUnits
         ignore
         rate
         selFirst
@@ -22,6 +22,7 @@ classdef SortGUI < handle
     
     properties (Access = private, Constant)
         spacing = 8;
+        btnHeight = 30;
     end
     
     
@@ -62,7 +63,7 @@ classdef SortGUI < handle
                 'CellEditCallback', @(src, evt) self.tableEdit(src, evt));
             
             % buttons for moving the list
-            h = 30;
+            h = self.btnHeight;
             wi = 40;
             pos = [2 * s + w, height - s - h, wi, h];
             self.up = uicontrol('Style', 'pushbutton', 'Position', pos, ...
@@ -101,7 +102,7 @@ classdef SortGUI < handle
             
             % statistics etc
             self.rate = histc(assignments, 1 : self.M) / (t(end) - t(1)) * 1000;
-            self.su = false(self.M, 1);
+            self.singleUnits = false(self.M, 1);
             self.ignore = false(self.M, 1);
             self.setSelection(1, 15);
             
@@ -148,7 +149,7 @@ classdef SortGUI < handle
             colors = arrayfun(@(k) colorPatch(self.colorScheme.getColor(k - 1)), indices, 'uni', false);
             [colors{self.ignore(indices)}] = deal('');
             self.table.RowName = num2cell(indices);
-            self.table.Data = [colors, num2cell(self.su(indices)), ...
+            self.table.Data = [colors, num2cell(self.singleUnits(indices)), ...
                 arrayfun(@(x) sprintf('<html><p align="right" width=35">%.1f</p></html>', x), self.rate(indices), 'uni', false), ...
                 num2cell(self.ignore(indices))];
             
@@ -163,7 +164,7 @@ classdef SortGUI < handle
             indices = self.selFirst : self.selLast;
             switch evt.Indices(2)
                 case 2
-                    self.su(indices(evt.Indices(1))) = evt.NewData;
+                    self.singleUnits(indices(evt.Indices(1))) = evt.NewData;
                 case 4
                     self.ignore(indices(evt.Indices(1))) = evt.NewData;
             end
