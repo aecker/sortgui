@@ -5,14 +5,9 @@ import javax.media.opengl.GLAutoDrawable;
 
 public class SpikeTimeView extends View {
 
-	int n;
-	float[][] times, amplitudes;
-	float T;
-	
-	public SpikeTimeView() {
-		times = new float[0][0];
-		amplitudes = new float[0][0];
-	}
+	float[][] times = new float[0][0], amplitudes = new float[0][0];
+	int[][] groups = new int[0][0];
+	float T = 0;
 	
 	public void setNumCells(int n) {
 		times = new float[n][0];
@@ -31,7 +26,7 @@ public class SpikeTimeView extends View {
 	@Override
 	public DisplayLists genLists(GL2 gl) {
 
-		n = times.length;
+		int n = times.length;
 		DisplayLists lists = new DisplayLists(gl, n);
 		for (int i = 0; i != n; ++i) {
 			lists.newList(i);

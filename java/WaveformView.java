@@ -7,20 +7,11 @@ public class WaveformView extends View {
 
 	int neurons; // number of templates
 	int channels; // number of channels
-	float[][][][] waveforms;
-	int[] peaks;
-	float[] locx, locy;
-	float spacing;
-	int padding;
-	
-	public WaveformView() {
-		waveforms = new float[0][0][0][0];
-		peaks = new int[0];
-		locx = new float[0];
-		locy = new float[0];
-		spacing = 100;
-		padding = 2;
-	}
+	float[][][][] waveforms = new float[0][0][0][0];
+	int[] peaks = new int[0];
+	float[] locx = new float[0], locy = new float[0];
+	float spacing = 15;
+	int padding = 2;
 	
 	public void setChannelLayout(float[] x, float[] y) {
 		locx = x;

@@ -5,16 +5,9 @@ import javax.media.opengl.GL2;
 
 public class CorrelogramView extends View {
 
-	int n, bins; 
-	float[][][] ccg;
-	int padding;
-	
-	public CorrelogramView() {
-		ccg = new float[0][0][0];
-		n = 0;
-		bins = 0;
-		padding = 2;
-	}
+	int n = 0, bins = 0; 
+	float[][][] ccg = new float[0][0][0];
+	int padding = 0;
 	
 	public void setCCG(float[][][] ccg) {
 		this.ccg = ccg;
