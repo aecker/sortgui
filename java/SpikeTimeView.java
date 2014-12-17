@@ -22,6 +22,14 @@ public class SpikeTimeView extends View {
 		T = Math.max(T, times[times.length - 1]);
 		repaint = true;
 	}
+	
+	public void setNumGroups(int n) {
+		groups = new int[n][0];
+	}
+	
+	public void setGroup(int i, int[] k) {
+		groups[i] = k;
+	}
 
 	@Override
 	public DisplayLists genLists(GL2 gl) {
@@ -30,16 +38,12 @@ public class SpikeTimeView extends View {
 		DisplayLists lists = new DisplayLists(gl, n);
 		for (int i = 0; i != n; ++i) {
 			lists.newList(i);
-			gl.glPushMatrix();
-			float[] c = colors.getColor(i);
-			gl.glColor3f(c[0], c[1], c[2]);
 			gl.glBegin(GL2.GL_POINTS);
 			float[] t = times[i], a = amplitudes[i];
 			for (int j = 0; j != t.length; ++j) {
 				gl.glVertex2f(t[j], a[j] - 1);
 			}
 			gl.glEnd();
-			gl.glPopMatrix();
 			gl.glEndList();
 		}
 		return lists;
@@ -60,7 +64,11 @@ public class SpikeTimeView extends View {
 		gl.glTranslatef(0, selected.length, 0);
 		for (int i = 0; i != selected.length; ++i) {
 			gl.glTranslatef(0, -1, 0);
-			callList(selected[i]);
+			float[] c = colors.getColor(selected[i]);
+			gl.glColor3f(c[0], c[1], c[2]);
+			for (int j = 0; j != groups[selected[i]].length; ++j) {
+				callList(groups[selected[i]][j]);
+			}
         }
 	}
 
