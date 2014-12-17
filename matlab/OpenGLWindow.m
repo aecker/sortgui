@@ -32,6 +32,7 @@ classdef OpenGLWindow < handle
             set(self.fig, 'SizeChangedFcn', @(~, ~) self.onResize());
             self.onResize();
             self.hdl.JavaComponent.addGLEventListener(evtListener);
+            self.hdl.JavaComponent.addMouseListener(evtListener);
             
             % set up events
             self.hdl.MouseClickedCallback = @(src, evt) self.notify('MouseClicked', MouseClickedEventData(handle(evt)));

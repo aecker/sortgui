@@ -6,6 +6,7 @@ classdef MCorrelogramView < MView
             % Constructor for MCorrelogramView.
             
             self = self@MView(CorrelogramView(), 'Cross-correlograms');
+            self.jobj.OpenCallback = @(evt) disp(evt);
         end
         
         function setCCG(self, ccg)

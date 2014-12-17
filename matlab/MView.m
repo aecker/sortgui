@@ -9,6 +9,7 @@ classdef MView < OpenGLWindow
         function self = MView(jobj, title, varargin)
             % Constructor for MView.
             
+            jobj = handle(jobj, 'CallbackProperties');
             self = self@OpenGLWindow(jobj, title, varargin{:});
             self.jobj = jobj;
         end
