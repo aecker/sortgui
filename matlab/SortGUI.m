@@ -175,6 +175,9 @@ classdef SortGUI < handle
             set(self.ccgView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.waveView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.spikeView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
+            self.ccgView.addlistener('KeyPressed', @(~, evt) self.handleKeyboard(evt));
+            self.waveView.addlistener('KeyPressed', @(~, evt) self.handleKeyboard(evt));
+            self.spikeView.addlistener('KeyPressed', @(~, evt) self.handleKeyboard(evt));
             
             set(self.fig, 'DeleteFcn', @(~, ~) self.close(), ...
                           'ResizeFcn', @(~, ~) self.resize())
@@ -333,7 +336,7 @@ classdef SortGUI < handle
                     k = str2double(evt.Key);
                     k = k + 10 * (k == 0);
                     self.setSelection(self.selFirst, self.selFirst + k - 1);
-                case 'h'
+                case {'h', 'H'}
                     disp ' '
                     disp 'Key bindings'
                     disp ' '
