@@ -40,7 +40,7 @@ classdef SortGUI < handle
     
     methods (Static)
         
-        function su = open(t, assignments, ampl, W, channelLayout)
+        function [groupings, su] = open(t, assignments, ampl, W, channelLayout)
             % Open GUI window
             
             % open GUI window and block command window
@@ -52,8 +52,9 @@ classdef SortGUI < handle
                 close(gui.fig)
             end
             
-            % return single units
+            % return single units and groupings
             su = gui.singleUnits;
+            groupings = gui.groupings;
         end
         
     end
