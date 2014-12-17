@@ -1,3 +1,5 @@
+import java.awt.event.MouseEvent;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GL2;
@@ -5,10 +7,37 @@ import javax.media.opengl.GL2;
 
 public class CorrelogramView extends View {
 
-	int n = 0, bins = 0; 
+	int n = 0, bins = 0;
 	float[][][] ccg = new float[0][0][0];
 	int padding = 0;
-	
+
+	@SuppressWarnings("rawtypes")
+	java.util.Vector listeners = new java.util.Vector();
+
+	@SuppressWarnings("unchecked")
+	public void addCorrelogramViewListener(CorrelogramViewListener lis) {
+		listeners.addElement(lis);
+	}
+
+	public void removeCorrelogramViewListener(CorrelogramViewListener lis) {
+		listeners.removeElement(lis);
+	}
+
+	public interface CorrelogramViewListener extends java.util.EventListener {
+		void open(CorrelogramViewEvent event);
+	}
+
+	public class CorrelogramViewEvent extends java.util.EventObject {
+		private static final long serialVersionUID = 1L;
+		public int i, j;
+
+		CorrelogramViewEvent(Object obj, int i, int j) {
+			super(obj);
+			this.i = i;
+			this.j = j;
+		}
+	}
+
 	public void setCCG(float[][][] ccg) {
 		this.ccg = ccg;
 		n = ccg.length;
@@ -93,4 +122,16 @@ public class CorrelogramView extends View {
         	}
         }
 	}	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int x = e.getX(), y = e.getY();
+		int n = selected.length;
+		int i = Math.max(0,  Math.min(n - 1, (y * n) / height));
+		int j = Math.max(0,  Math.min(n - 1, (x * n) / width));
+		for (int k = 0; k < listeners.size(); ++k) {
+			CorrelogramViewEvent event = new CorrelogramViewEvent(this, i, j);
+			((CorrelogramViewListener) listeners.elementAt(k)).open(event);
+		}
+	}
 }

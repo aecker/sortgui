@@ -1,10 +1,14 @@
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
 
-public abstract class View implements GLEventListener {
+public abstract class View implements GLEventListener, MouseListener {
 
+	protected int width, height;
 	DisplayLists lists;
 	boolean repaint;
 	protected int[] selected;
@@ -58,6 +62,8 @@ public abstract class View implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
+		this.width = width;
+		this.height = height;
 		GL2 gl = glautodrawable.getGL().getGL2();
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -71,5 +77,24 @@ public abstract class View implements GLEventListener {
 	protected abstract DisplayLists genLists(GL2 gl);
 	
 	protected abstract void draw(GLAutoDrawable glautodrawable);
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
 }
