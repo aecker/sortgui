@@ -183,6 +183,11 @@ classdef SortGUI < handle
                           'ResizeFcn', @(~, ~) self.resize())
         end
         
+        
+        function delete(self)
+            self.close()
+        end
+        
     end
     
     
