@@ -321,12 +321,7 @@ classdef SortGUI < handle
         
         
         function updateSpikeTimes(self)
-            a = zeros(size(self.assignments));
-            for i = 1 : self.numGroups
-                idx = ismember(self.assignments, self.groupings{i});
-                a(idx) = i;
-            end
-            self.spikeView.setSpikes(self.t, self.ampl, a);
+            self.spikeView.setGroups(self.groupings);
         end
         
         
