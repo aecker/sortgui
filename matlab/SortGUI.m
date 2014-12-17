@@ -175,8 +175,18 @@ classdef SortGUI < handle
             set(self.waveView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             set(self.spikeView, 'KeyPressFcn', @(~, evt) self.handleKeyboard(evt));
             
-            set(self.fig, 'DeleteFcn', @(~, ~) self.close(), ...
+            set(self.fig, 'DeleteFcn', @(~, ~) self.delete(), ...
                           'ResizeFcn', @(~, ~) self.resize())
+        end
+        
+        
+        function delete(self)
+            if ishghandle(self.fig)
+                close(self.fig)
+            end
+            delete(self.ccgView)
+            delete(self.spikeView)
+            delete(self.waveView)
         end
         
     end
@@ -363,13 +373,6 @@ classdef SortGUI < handle
             self.groupBtn.Position(2) = self.moreBtn.Position(2) - s - h;
             self.ungroupBtn.Position(2) = self.groupBtn.Position(2) - h;
             self.table.Position(4) = height - 2 * s;
-        end
-        
-        
-        function close(self)
-            delete(self.ccgView)
-            delete(self.spikeView)
-            delete(self.waveView)
         end
         
     end
