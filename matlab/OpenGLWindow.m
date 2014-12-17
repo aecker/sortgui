@@ -12,6 +12,11 @@ classdef OpenGLWindow < handle
         toolbarSpacing = 8;   % px between toolbar components
     end
     
+    events
+        MouseClicked
+        KeyPressed
+    end
+    
     methods
         function self = OpenGLWindow(evtListener, name, toolbarHeight)
             % Constructor for OpenGLWindow.
@@ -27,6 +32,10 @@ classdef OpenGLWindow < handle
             set(self.fig, 'SizeChangedFcn', @(~, ~) self.onResize());
             self.onResize();
             self.hdl.JavaComponent.addGLEventListener(evtListener);
+            
+            % set up events
+            self.hdl.MouseClickedCallback = @(src, evt) self.notify('MouseClicked', MouseClickedEventData(handle(evt)));
+            self.hdl.KeyPressedCallback = @(src, evt) self.notify('KeyPressed', KeyPressedEventData(handle(evt)));
         end
         
         function set(self, varargin)
