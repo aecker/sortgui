@@ -15,11 +15,11 @@ classdef MWaveformView < MView
             
             % add toolbar
             self.addToToolbar('JLabel', 55, 'Text', 'Spacing:', 'HorizontalAlignment', javax.swing.SwingConstants.RIGHT);
-            self.scaling = self.addToToolbar('JSpinner', 60, 'Value', 100);
+            self.scaling = self.addToToolbar('JSpinner', 60, 'Value', 15);
             self.scaling.StateChangedCallback = @(src, evt) self.setSpacing(src.Value);
             m = self.scaling.JavaComponent.getModel();
-            m.setMinimum(java.lang.Integer(10));
-            m.setStepSize(java.lang.Integer(10));
+            m.setMinimum(java.lang.Integer(5));
+            m.setStepSize(java.lang.Integer(5));
 
             self.addToToolbar('JLabel', 70, 'Text', 'Padding:', 'HorizontalAlignment', javax.swing.SwingConstants.RIGHT);
             self.padding = self.addToToolbar('JSpinner', 45, 'Value', 2);
