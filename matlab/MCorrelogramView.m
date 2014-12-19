@@ -1,12 +1,15 @@
 classdef MCorrelogramView < MView
     % Correlogram view (Matlab interface for Java class CorrelogramView).
     
+    properties
+        OpenCCGCallback
+    end
+    
     methods
         function self = MCorrelogramView()
             % Constructor for MCorrelogramView.
             
             self = self@MView(CorrelogramView(), 'Cross-correlograms');
-            self.jobj.OpenCallback = @(evt) disp(evt);
         end
         
         function setCCG(self, ccg)
@@ -16,7 +19,7 @@ classdef MCorrelogramView < MView
             %   neurons.
             
             ccg = bsxfun(@rdivide, ccg, max(ccg));
-            ccg = permute(ccg, [3 2 1]);
+            ccg = permute(ccg, [2 3 1]);
             self.jobj.setCCG(ccg);
             self.repaint();
         end
@@ -28,6 +31,14 @@ classdef MCorrelogramView < MView
             
             self.jobj.setSelected(int32(sel - 1));
             self.repaint();
+        end
+        
+        function set.OpenCCGCallback(self, cb)
+            self.jobj.OpenCallback = cb;
+        end
+        
+        function cb = get.OpenCCGCallback(self)
+            cb = self.jobj.OpenCallback;
         end
     end
 end

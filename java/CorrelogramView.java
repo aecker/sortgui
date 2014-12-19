@@ -29,13 +29,16 @@ public class CorrelogramView extends View {
 
 	public class CorrelogramViewEvent extends java.util.EventObject {
 		private static final long serialVersionUID = 1L;
-		public int i, j;
+		private int i, j;
 
 		CorrelogramViewEvent(Object obj, int i, int j) {
 			super(obj);
 			this.i = i;
 			this.j = j;
 		}
+		
+		public int getI() { return i; }
+		public int getJ() { return j; }
 	}
 
 	public void setCCG(float[][][] ccg) {

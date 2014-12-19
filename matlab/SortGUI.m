@@ -30,6 +30,7 @@ classdef SortGUI < handle
         W
         channelLayout
         ccg
+        ccgGrouped
     end
     
     properties (Access = private, Constant)
@@ -139,11 +140,13 @@ classdef SortGUI < handle
             
             % cross-correlograms
             self.ccg = correlogram(t, assignments, self.numTemplates, 0.2, 10);
+            self.ccgGrouped = self.ccg;
             self.ccgView = MCorrelogramView;
             self.ccgView.setCCG(self.ccg)
             w = 1200;
             height = 800;
             set(self.ccgView, 'Position', [left + width, top - height, w, height]);
+            self.ccgView.OpenCCGCallback = @(~, evt) self.openCCG(evt);
             
             % waveforms
             th = 22;
@@ -305,6 +308,7 @@ classdef SortGUI < handle
                 end
             end
             self.ccgView.setCCG(ccg)
+            self.ccgGrouped = ccg;
         end
         
         
@@ -321,6 +325,24 @@ classdef SortGUI < handle
         
         function updateSpikeTimes(self)
             self.spikeView.setGroups(self.groupings);
+        end
+        
+        
+        function openCCG(self, evt)
+            c = 0.3 * [1 1 1];
+            set(figure, 'Color', c)
+            axes('Position', [0 0 1 1])
+            i = evt.getI();
+            j = evt.getJ();
+            indices = self.selFirst : self.selLast;
+            indices = indices(~self.ignore(indices));
+            if i == j
+                fc = self.colorScheme.getColor(i);
+            else
+                fc = 'k';
+            end
+            bar(self.ccgGrouped(:, indices(i + 1), indices(j + 1)), 1, 'FaceColor', fc, 'LineStyle', 'none')
+            axis tight off
         end
         
         
