@@ -56,6 +56,7 @@ public class SpikeSortingGUI {
         M = 10;
         N = 10000;
         spikeView.setNumCells(M);
+        spikeView.setNumGroups(M);
         for (int i = 0; i != M; ++i) {
         	float[] times = new float[N];
             float[] amplitudes = new float[N];
@@ -66,6 +67,8 @@ public class SpikeSortingGUI {
             	amplitudes[j] = (float) (1 + rand.nextGaussian() / 20.0);
         	}
             spikeView.setSpikes(i, times, amplitudes);
+            int[] k = {i};
+            spikeView.setGroup(i, k);
         }
         spikeView.setSelected(sel);
         
