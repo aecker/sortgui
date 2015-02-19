@@ -32,7 +32,7 @@ classdef MSpikeTimeView < MView
             K = numel(groups);
             self.jobj.setNumGroups(K);
             for i = 1 : K
-                self.jobj.setGroup(i - 1, groups{i});
+                self.jobj.setGroup(i - 1, groups{i} - 1);
             end
             self.repaint();
         end
